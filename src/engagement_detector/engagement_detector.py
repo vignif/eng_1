@@ -7,7 +7,8 @@ from PIL import Image
 import keras
 from keras.models import load_model
 from keras.preprocessing import image
-from keras_applications.resnext import ResNeXt50, preprocess_input
+from tensorflow.keras.applications.resnet50 import ResNet50, preprocess_input
+# from keras_applications.resnext import ResNeXt50, preprocess_input
 from keras.applications.imagenet_utils import decode_predictions
 import tensorflow as tf
 
@@ -26,20 +27,22 @@ class EngagementDetector:
         self.window_size = 0
 
         # tf settings
-        config = tf.ConfigProto()
-        config.gpu_options.allow_growth = True
-        sess= tf.Session(config=config)
+        config = tf.compat.v1.ConfigProto()
+        config.gpu_options.allow_growth=True
+        sess = tf.compat.v1.Session(config=config)
+        tf.compat.v1.enable_eager_execution()
         keras.backend.set_session(sess)
-
         # load the networks in memory
         self._load_networks()
 
 
+
+
     def _load_networks(self):
         # load resnet
-        self.resNet = ResNeXt50(include_top=False, input_shape=(224, 224, 3),  pooling='max', weights='imagenet', backend = keras.backend, layers = keras.layers, models = keras.models, utils = keras.utils)
-        self.resNet._make_predict_function()
-        self.resNet_graph = tf.get_default_graph()
+        self.resNet = ResNet50(include_top=False, input_shape=(224, 224, 3),  pooling='max', weights='imagenet')
+        self.resNet.make_predict_function()
+        self.resNet_graph = tf.compat.v1.get_default_graph()
 
         ##### test resnet in detecting a dog in img
         ##### NOTE: set `include_top=True` above to test this
@@ -54,9 +57,9 @@ class EngagementDetector:
         # load lstm
         model_path = os.path.join(self._this_dir_path, "../../models/lstm_10_50_runsigm_runsigm.h5")
         self.lstm = load_model(model_path)
-        self.lstm._make_predict_function()
-        self.lstm_graph = tf.get_default_graph()
-
+        self.lstm.make_predict_function()
+        self.lstm_graph = tf.compat.v1.get_default_graph()
+        
         # this model is trained to detect engagement on 10 frames
         self.window_size = 10   # frames
 
@@ -68,11 +71,11 @@ class EngagementDetector:
         batch = []
 
         frames_seq = [np.array(Image.fromarray(frame).resize((224, 224))) for frame in frames_seq]
-        batch = preprocess_input(np.array(frames_seq), backend = keras.backend, layers = keras.layers, models = keras.models, utils = keras.utils)
+        batch = preprocess_input(np.array(frames_seq))
 
         # extract features with resnet
         with self.resNet_graph.as_default():
-            features = self.resNet.predict_on_batch(batch)
+            features = self.resNet.predict_on_batch(batch) ##ERROR HERE
 
         # predict engagement with lstm
         with self.lstm_graph.as_default():

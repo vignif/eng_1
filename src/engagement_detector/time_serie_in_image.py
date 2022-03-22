@@ -39,8 +39,8 @@ class TimeSerieInImage(object):
         grid_draw.line([(0, plot_offset), (width, plot_offset)], fill=(255, 255, 255), width=2)
         grid_draw.line([(0, plot_offset + plot_max_height), (width, plot_offset + plot_max_height)], fill=(255, 255, 255), width=2)
         grid_draw.line([(width/2., plot_offset - 10), (width/2., plot_offset + plot_max_height + 1)], fill=(200, 200, 200), width=2)
-        grid_draw.text((0, plot_offset - 11), "1.0", font=ImageFont.truetype("arial", 10), fill=(255, 255, 255))
-        grid_draw.text((0, plot_offset + plot_max_height - 11), "0.0", font=ImageFont.truetype("arial", 10), fill=(255, 255, 255))
+        grid_draw.text((0, plot_offset - 11), "1.0", font=ImageFont.load_default(), fill=(255, 255, 255))
+        grid_draw.text((0, plot_offset + plot_max_height - 11), "0.0", font=ImageFont.load_default(), fill=(255, 255, 255))
 
         # plot the series
         y_pre  = self.data_serie[0:min(self.num_points_to_plot, self.data_serie.size)]
@@ -61,6 +61,6 @@ class TimeSerieInImage(object):
         plot_draw = ImageDraw.Draw(img)
         plot_draw.line(xy_pre, fill=self.pre_color, width=self.line_width, joint="curve")
         plot_draw.line(xy_post, fill=self.post_color, width=self.line_width, joint="curve")
-        plot_draw.text((width/2., plot_offset - 20  ), "%.2f" % value, font=ImageFont.truetype("arial", 16), fill=self.pre_color)
+        plot_draw.text((width/2., plot_offset - 20  ), "%.2f" % value, font=ImageFont.load_default(), fill=self.pre_color)
 
         return np.array(img)

@@ -1,5 +1,5 @@
 <launch>
-  <arg name="image" default="/camera/color/image_raw"/>
+  <arg name="image" default="/usb_cam/image_raw"/>
   <arg name="debug_image" default="true"/>
   <arg name="out_image" default="/engagement_detector/out_image"/>
 

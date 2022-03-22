@@ -37,7 +37,7 @@ class ROSEngagementDetector():
     def _img_cb(self, msg):
         try:
             cv_image = self.bridge.imgmsg_to_cv2(msg, "bgr8")
-        except CvBridgeError, e:
+        except CvBridgeError as e:
             rospy.logerr(e)
 
         last_img = np.asarray(cv_image)
@@ -52,7 +52,7 @@ class ROSEngagementDetector():
             out_img = self.image_plotter.step(last_img.copy(), self.last_value)
             try:
                 out_imgmsg = self.bridge.cv2_to_imgmsg(out_img, "bgr8")
-            except CvBridgeError, e:
+            except CvBridgeError as e:
                 rospy.logerr(e)
 
             self.outImg_pub.publish(out_imgmsg)
