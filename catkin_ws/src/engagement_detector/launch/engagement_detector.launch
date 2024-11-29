@@ -1,6 +1,6 @@
 <launch>
-  <arg name="image" default="/camera/color/image_raw"/>
-  <arg name="debug_image" default="true"/>
+  <arg name="image" default="/naoqi_driver_node/camera/front/image_raw"/>
+  <arg name="debug_image" default="false"/>
   <arg name="out_image" default="/engagement_detector/out_image"/>
 
   <node name="engagement_detector" pkg="engagement_detector" type="ros_engagement_detector.py">

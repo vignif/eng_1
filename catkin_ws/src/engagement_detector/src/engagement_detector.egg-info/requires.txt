@@ -1,0 +1,6 @@
+keras==2.2.4
+numpy
+opencv-python
+pillow
+rospkg
+tensorflow-gpu==1.14.0

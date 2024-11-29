@@ -1,0 +1,49 @@
+FROM ros:melodic
+
+
+LABEL maintainer="Francesco Vigni <vignif@gmail.com>"
+
+# Copy all contents from the current directory to the app directory
+COPY /catkin_ws /catkin_ws
+
+# # Update aptitude with new repo and install necessary software
+# Install essential build tools and dependencies
+RUN apt-get update && \
+    DEBIAN_FRONTEND=noninteractive apt-get install -y --no-install-recommends \
+    build-essential g++-8 cmake git libopenblas-dev libgtk2.0-dev pkg-config \
+    libavcodec-dev libavformat-dev libswscale-dev python3-opencv python3-rosdep \
+    python3-catkin-tools libtbb2 libtbb-dev libjpeg-dev libpng-dev libtiff-dev \
+    libdc1394-22-dev unzip wget ros-melodic-catkin ros-melodic-cv-bridge \
+    libyaml-cpp-dev ros-melodic-tf2* apturl libosmesa6-dev libgl1-mesa-dev \
+    libglu1-mesa-dev libavdevice-dev libavutil-dev libavfilter-dev python3-pip \
+    libswresample-dev libfreetype6-dev libsndfile1 libboost-dev libeigen3-dev \
+    ros-melodic-image-geometry ros-melodic-trajectory-msgs ros-melodic-visualization-msgs \
+    && rm -rf /var/lib/apt/lists/*
+
+WORKDIR /catkin_ws
+
+# COPY download_model.sh download_model.sh
+# # # Download the Keras model
+# RUN chmod +x download_model.sh
+# RUN ./download_model.sh
+RUN update-alternatives --install /usr/bin/python python /usr/bin/python3 10 && \
+    update-alternatives --install /usr/bin/pip pip /usr/bin/pip3 10
+
+RUN pip install --upgrade pip setuptools wheel build
+# RUN pip install defusedxml netifaces keras
+RUN pip install numpy pillow tensorflow-gpu==1.14.0 keras==2.2.5
+
+
+RUN pip install defusedxml netifaces 
+# opencv-python rospkg
+
+RUN pip install h5py==2.10.0
+COPY entrypoint.sh /entrypoint.sh
+
+# Make the entrypoint script executable
+RUN chmod +x /entrypoint.sh
+
+RUN /entrypoint.sh
+
+
+CMD [ "/bin/bash" ]

@@ -1,0 +1,17 @@
+version: '3'
+
+services:
+  eng_1:
+    build: .
+    environment:
+      - ROS_MASTER_URI=http://localhost:11311
+      - ROS_HOSTNAME=localhost
+    command: bash -c "source /opt/ros/noetic/setup.bash && bin/bash"
+    tty: true
+    stdin_open: true
+    networks:
+      - ros_network
+
+networks:
+  ros_network:
+    external: true
